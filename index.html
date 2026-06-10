@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធគ្រប់គ្រងអាជីវកម្មខ្នាតតូច - SME Suite</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for beautiful Khmer & English Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for sleek modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Configure Tailwind to use Kantumruy Pro as the primary font
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Kantumruy Pro', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col md:flex-row font-sans">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col z-20 transition-all duration-300">
+        <!-- Logo / Brand Title -->
+        <div class="p-5 flex items-center justify-between border-b border-slate-800">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-sky-500 rounded-lg text-white">
+                    <i class="fa-solid fa-chart-line text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide">SME Suite</h1>
+                    <p class="text-xs text-slate-400">ប្រព័ន្ធគ្រប់គ្រងអាជីវកម្ម</p>
+                </div>
+            </div>
+            <button id="mobileMenuBtn" class="md:hidden text-slate-400 hover:text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav id="sidebarNav" class="hidden md:flex flex-col flex-grow p-4 space-y-2">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn active flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-square-poll-horizontal w-5"></i>
+                <span>ផ្ទាំងគ្រប់គ្រង (Dashboard)</span>
+            </button>
+            <button onclick="switchTab('products')" id="btn-products" class="nav-btn flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-box w-5"></i>
+                <span>ផលិតផល/ស្តុក (Products)</span>
+            </button>
+            <button onclick="switchTab('sales')" id="btn-sales" class="nav-btn flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-cart-shopping w-5"></i>
+                <span>ការលក់/POS (Sales)</span>
+            </button>
+            <button onclick="switchTab('transactions')" id="btn-transactions" class="nav-btn flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-money-bill-transfer w-5"></i>
+                <span>ចំណូល-ចំណាយ (Cash Flow)</span>
+            </button>
+            <button onclick="switchTab('reports')" id="btn-reports" class="nav-btn flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-file-invoice-dollar w-5"></i>
+                <span>របាយការណ៍ហិរញ្ញវត្ថុ (Reports)</span>
+            </button>
+            <button onclick="switchTab('staff')" id="btn-staff" class="nav-btn flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-user-tie w-5"></i>
+                <span>បុគ្គលិក (Staff)</span>
+            </button>
+            <button onclick="switchTab('customers')" id="btn-customers" class="nav-btn flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-200 text-left w-full hover:bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-users w-5"></i>
+                <span>អតិថិជន (Customers)</span>
+            </button>
+        </nav>
+
+        <!-- Sidebar Footer Info -->
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-400 hidden md:block">
+            <p><i class="fa-solid fa-circle text-emerald-500 mr-2 animate-pulse"></i> ម៉ាស៊ីនដំណើរការធម្មតា</p>
+            <p class="mt-1">កំណែទម្រង់ v1.4.0</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col overflow-x-hidden">
+        <!-- Top Navigation / Header -->
+        <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+            <div>
+                <h2 id="pageTitle" class="text-xl font-bold text-slate-800">ផ្ទាំងគ្រប់គ្រង (Dashboard)</h2>
+                <p id="pageSubtitle" class="text-xs text-slate-500">ទិដ្ឋភាពទូទៅនៃដំណើរការអាជីវកម្មរបស់អ្នក</p>
+            </div>
+            <!-- Quick Actions -->
+            <div class="flex items-center space-x-4">
+                <button onclick="openNewSaleModal()" class="bg-sky-500 hover:bg-sky-600 text-white font-medium px-4 py-2 rounded-xl text-sm transition shadow-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>លក់រហ័ស (New Sale)</span>
+                </button>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <!-- Profile Indicator -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 font-bold border border-slate-200">
+                        Admin
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content View Wrapper -->
+        <div class="p-6 flex-grow overflow-y-auto">
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="space-y-6">
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Total Sales -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:shadow-md transition duration-200">
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-500 tracking-wider uppercase">ការលក់សរុប (Total Sales)</span>
+                            <h3 id="statTotalSales" class="text-2xl font-bold text-slate-900">$0.00</h3>
+                            <span class="text-xs text-emerald-500 font-medium"><i class="fa-solid fa-arrow-up mr-1"></i> សប្តាហ៍នេះ</span>
+                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <!-- Total Expenses -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:shadow-md transition duration-200">
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-500 tracking-wider uppercase">ចំណាយសរុប (Expenses)</span>
+                            <h3 id="statTotalExpenses" class="text-2xl font-bold text-rose-600">$0.00</h3>
+                            <span class="text-xs text-rose-500 font-medium"><i class="fa-solid fa-arrow-down mr-1"></i> ចំណាយអាជីវកម្ម</span>
+                        </div>
+                        <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                    </div>
+                    <!-- Net Profit -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:shadow-md transition duration-200">
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-500 tracking-wider uppercase">ចំណេញសុទ្ធ (Net Profit)</span>
+                            <h3 id="statNetProfit" class="text-2xl font-bold text-teal-600">$0.00</h3>
+                            <span class="text-xs text-teal-500 font-medium"><i class="fa-solid fa-coins mr-1"></i> ចំណូលដកចំណាយ</span>
+                        </div>
+                        <div class="w-12 h-12 bg-teal-50 text-teal-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                        </div>
+                    </div>
+                    <!-- Total Customers -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between hover:shadow-md transition duration-200">
+                        <div class="space-y-2">
+                            <span class="text-xs font-semibold text-slate-500 tracking-wider uppercase">អតិថិជនសរុប (Customers)</span>
+                            <h3 id="statCustomerCount" class="text-2xl font-bold text-slate-900">0</h3>
+                            <span class="text-xs text-amber-500 font-medium"><i class="fa-solid fa-user-plus mr-1"></i> ក្នុងប្រព័ន្ធ</span>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphs & Alert Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Analytics Graph -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-chart-area mr-2 text-sky-500"></i>ប្រៀបធៀបការលក់ប្រចាំខែ (Sales Trends)</h4>
+                            <span class="text-xs text-slate-400">គិតជាដុល្លារ ($)</span>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Alert Panel (Low Stock Warnings) -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                                <h4 class="font-bold text-slate-800 text-base flex items-center"><i class="fa-solid fa-circle-exclamation mr-2 text-rose-500 animate-pulse"></i>ការព្រមានស្តុកទាប (Low Stock)</h4>
+                                <span class="bg-rose-100 text-rose-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase" id="lowStockBadge">0 មុខ</span>
+                            </div>
+                            <div class="mt-4 divide-y divide-slate-100 max-h-52 overflow-y-auto pr-1" id="lowStockContainer">
+                                <!-- Dynamic warning items will render here -->
+                                <div class="py-3 text-center text-slate-400 text-xs">គ្មានផលិតផលជិតអស់ពីស្តុកទេ</div>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('products')" class="w-full mt-4 text-center text-xs text-sky-500 hover:text-sky-600 font-semibold border border-sky-100 hover:border-sky-200 bg-sky-50/50 py-2.5 rounded-xl transition">
+                            គ្រប់គ្រងស្តុកឡើងវិញ <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-history mr-2 text-indigo-500"></i>ប្រវត្តិនៃការលក់ថ្មីៗ (Recent Transactions)</h4>
+                        <button onclick="switchTab('sales')" class="text-xs text-sky-500 hover:text-sky-600 font-semibold">មើលទាំងអស់</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-3.5 px-6">លេខកូដវិក្កយបត្រ</th>
+                                    <th class="py-3.5 px-6">កាលបរិច្ឆេទ</th>
+                                    <th class="py-3.5 px-6">អតិថិជន</th>
+                                    <th class="py-3.5 px-6">វិធីសាស្ត្រទូទាត់</th>
+                                    <th class="py-3.5 px-6 text-right">តម្លៃសរុប</th>
+                                    <th class="py-3.5 px-6 text-center">សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="recentSalesTable">
+                                <!-- Dynamic Sales Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: PRODUCTS (INVENTORY) -->
+            <section id="tab-products" class="space-y-6 hidden">
+                <!-- Actions & Search Bar -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="relative w-full sm:w-80">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </span>
+                        <input type="text" id="searchProduct" oninput="filterProducts()" placeholder="ស្វែងរកផលិតផល ឬប្រភេទ..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <select id="filterCategory" onchange="filterProducts()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition w-full sm:w-auto">
+                            <option value="All">គ្រប់ប្រភេទ (All)</option>
+                            <option value="ភេសជ្ជៈ">ភេសជ្ជៈ</option>
+                            <option value="អាហារសម្រន់">អាហារសម្រន់</option>
+                            <option value="សម្ភារៈ">សម្ភារៈ</option>
+                        </select>
+                        <button onclick="openProductModal()" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center space-x-2 w-full sm:w-auto shrink-0 shadow-sm">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>បន្ថែមទំនិញថ្មី</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Table Card -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-4 px-6">លេខកូដ (SKU)</th>
+                                    <th class="py-4 px-6">ឈ្មោះផលិតផល</th>
+                                    <th class="py-4 px-6">ប្រភេទ</th>
+                                    <th class="py-4 px-6">តម្លៃលក់</th>
+                                    <th class="py-4 px-6">ស្តុកបច្ចុប្បន្ន</th>
+                                    <th class="py-4 px-6">កម្រិតស្តុកទាបបំផុត</th>
+                                    <th class="py-4 px-6 text-center">សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="productsTableBody">
+                                <!-- Dynamic Product Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: SALES / POS -->
+            <section id="tab-sales" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left: POS / Checkout Terminal -->
+                    <div class="lg:col-span-8 space-y-6">
+                        <!-- POS Form / Product Search and Selector -->
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-cash-register mr-2 text-sky-500"></i>ប្រព័ន្ធលក់ទំនិញ (Cashier Register)</h3>
+                            
+                            <!-- Select Customer & Payment Method & Staff Selection -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ជ្រើសរើសអតិថិជន *</label>
+                                    <select id="posCustomerSelect" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                                        <!-- Dynamic customer list -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">វិធីសាស្ត្រទូទាត់ *</label>
+                                    <select id="posPaymentMethod" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                                        <option value="ABA Pay">ABA Pay</option>
+                                        <option value="សាច់ប្រាក់ (Cash)">សាច់ប្រាក់ (Cash)</option>
+                                        <option value="ភ្នាក់ងារវីង (Wing)">ភ្នាក់ងារវីង (Wing)</option>
+                                        <option value="ACLIDA">ACLIDA</option>
+                                        <option value="Amret">Amret</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">បុគ្គលិកលក់ / Cashier *</label>
+                                    <select id="posStaffSelect" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                                        <!-- Dynamic staff list -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Add Items Panel -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                                <div class="sm:col-span-2">
+                                    <div class="flex justify-between items-center mb-1.5">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase">ជ្រើសរើសផលិតផល</label>
+                                        <span id="selectedProductStockInfo" class="text-xs font-semibold text-sky-600"></span>
+                                    </div>
+                                    <select id="posProductSelect" onchange="updateSelectedProductStockInfo()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 bg-white transition">
+                                        <!-- Dynamic product select options -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <button onclick="addPosItem()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold py-2 px-4 rounded-xl transition flex items-center justify-center space-x-2">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                        <span>បញ្ចូលក្នុងបញ្ជី</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Basket Table -->
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                                <h4 class="font-bold text-slate-800 text-sm">បញ្ជីទំនិញដែលបានជ្រើសរើស</h4>
+                                <button onclick="clearPosCart()" class="text-xs text-rose-500 hover:text-rose-600 font-semibold"><i class="fa-solid fa-trash-can mr-1"></i> សម្អាតបញ្ជី</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                            <th class="py-3 px-6">ផលិតផល</th>
+                                            <th class="py-3 px-6 text-center">តម្លៃរាយ</th>
+                                            <th class="py-3 px-6 text-center" style="width: 140px;">បរិមាណ</th>
+                                            <th class="py-3 px-6 text-right">តម្លៃសរុប</th>
+                                            <th class="py-3 px-6 text-center">សកម្មភាព</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 text-sm" id="posCartTable">
+                                        <!-- Cart Items will be injected dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Checkout Calculations -->
+                    <div class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-fit">
+                        <div class="space-y-6">
+                            <h3 class="font-bold text-slate-800 text-base pb-3 border-b border-slate-100">ព័ត៌មានទូទាត់ប្រាក់</h3>
+                            
+                            <!-- Calculations panel -->
+                            <div class="space-y-3.5">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-500">តម្លៃទំនិញសរុប (Subtotal)</span>
+                                    <span id="posSubtotal" class="font-medium text-slate-800">$0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-slate-500">ការបញ្ចុះតម្លៃ (Discount %)</span>
+                                    <input type="number" id="posDiscount" min="0" max="100" value="0" oninput="calculatePosTotals()" class="w-20 border border-slate-200 rounded-lg px-2 py-1 text-right text-sm focus:outline-none focus:ring-1 focus:ring-sky-500">
+                                </div>
+                                <div class="border-t border-slate-100 pt-3 flex justify-between items-center">
+                                    <span class="text-base font-bold text-slate-800">តម្លៃសរុបចុងក្រោយ</span>
+                                    <span id="posTotal" class="text-2xl font-black text-sky-600">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="processPosSale()" class="w-full mt-8 bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-receipt"></i>
+                            <span>បោះពុម្ពវិក្កយបត្រ & បញ្ចប់ការលក់</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sales History List -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-history mr-2 text-indigo-500"></i>ប្រវត្តិប្រតិបត្តិការទាំងអស់</h4>
+                        <span class="text-xs text-slate-400">ស្វែងរក ឬពិនិត្យឡើងវិញ</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-3.5 px-6">លេខកូដវិក្កយបត្រ</th>
+                                    <th class="py-3.5 px-6">កាលបរិច្ឆេទ</th>
+                                    <th class="py-3.5 px-6">អតិថិជន</th>
+                                    <th class="py-3.5 px-6">អ្នកលក់</th>
+                                    <th class="py-3.5 px-6">វិធីសាស្ត្រទូទាត់</th>
+                                    <th class="py-3.5 px-6 text-right">តម្លៃសរុប</th>
+                                    <th class="py-3.5 px-6 text-center">សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="salesHistoryTable">
+                                <!-- Dynamic complete Sales rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: TRANSACTIONS (INCOME & EXPENSE) -->
+            <section id="tab-transactions" class="space-y-6 hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center space-x-2">
+                        <h3 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-money-bill-transfer text-sky-500 mr-2"></i>កត់ត្រាចំណូល-ចំណាយ</h3>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openTransactionModal('income')" class="bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-2">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>បញ្ចូលចំណូលផ្សេងៗ</span>
+                        </button>
+                        <button onclick="openTransactionModal('expense')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-2">
+                            <i class="fa-solid fa-minus"></i>
+                            <span>បញ្ចូលចំណាយ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cash Flow Table Card -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-sm">បញ្ជីប្រតិបត្តិការហិរញ្ញវត្ថុទាំងអស់</h4>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-4 px-6">កាលបរិច្ឆេទ</th>
+                                    <th class="py-4 px-6">ប្រភេទ</th>
+                                    <th class="py-4 px-6">ប្រភេទចំណូល/ចំណាយ</th>
+                                    <th class="py-4 px-6">ការពិពណ៌នា</th>
+                                    <th class="py-4 px-6 text-right">ទឹកប្រាក់ ($)</th>
+                                    <th class="py-4 px-6 text-center">សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="transactionsTableBody">
+                                <!-- Dynamic Transaction Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: REPORTS (DAILY/MONTHLY/YEARLY) -->
+            <section id="tab-reports" class="space-y-6 hidden">
+                <!-- Filters Grid -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-file-invoice-dollar text-indigo-500 mr-2"></i>របាយការណ៍ហិរញ្ញវត្ថុរួម</h3>
+                            <p class="text-xs text-slate-500">ពិនិត្យមើលលំហូរសាច់ប្រាក់ ជ្រើសរើសកាលបរិច្ឆេទ និងបោះពុម្ពឯកសារចេញ</p>
+                        </div>
+                        <button onclick="printSalesReport()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center space-x-2 w-full sm:w-auto shrink-0">
+                            <i class="fa-solid fa-print"></i>
+                            <span>បោះពុម្ពរបាយការណ៍ (Print Report)</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-4 items-center justify-between border-t border-slate-100 pt-4">
+                        <div class="grid grid-cols-3 gap-2 w-full lg:w-auto">
+                            <button onclick="filterReportScope('daily')" id="btn-rep-daily" class="report-filter-btn active py-2.5 px-4 bg-indigo-500 text-white rounded-xl text-xs font-semibold transition">
+                                របាយការណ៍ប្រចាំថ្ងៃ
+                            </button>
+                            <button onclick="filterReportScope('monthly')" id="btn-rep-monthly" class="report-filter-btn py-2.5 px-4 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold transition">
+                                របាយការណ៍ប្រចាំខែ
+                            </button>
+                            <button onclick="filterReportScope('yearly')" id="btn-rep-yearly" class="report-filter-btn py-2.5 px-4 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold transition">
+                                របាយការណ៍ប្រចាំឆ្នាំ
+                            </button>
+                        </div>
+                        <!-- Dynamic Selector (Date / Month / Year) -->
+                        <div class="w-full lg:w-auto flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <span class="text-xs font-semibold text-slate-500 uppercase px-1" id="pickerLabel">កាលបរិច្ឆេទ៖</span>
+                            <div id="pickerContainer">
+                                <!-- HTML Input injected dynamically by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Summary Metrics Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-slate-500 uppercase">ចំណូលសរុប (Total Revenue)</span>
+                            <h3 id="repRevenue" class="text-2xl font-bold text-emerald-600 mt-2">$0.00</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-arrow-up-right-dots"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-slate-500 uppercase">ចំណាយសរុប (Total Expenses)</span>
+                            <h3 id="repExpenses" class="text-2xl font-bold text-rose-600 mt-2">$0.00</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-arrow-down-wide-short"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-slate-500 uppercase">ចំណេញសុទ្ធ (Net Income)</span>
+                            <h3 id="repNetProfit" class="text-2xl font-bold text-teal-600 mt-2">$0.00</h3>
+                        </div>
+                        <div class="w-12 h-12 bg-teal-50 text-teal-500 rounded-xl flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Visual Graphic -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-chart-column mr-2 text-indigo-500"></i>ក្រាហ្វិកប្រៀបធៀបចំណូល-ចំណាយ</h4>
+                    <div class="h-80 relative">
+                        <canvas id="reportChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Detailed Records of Selected Period -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h4 class="font-bold text-slate-800 text-base" id="reportTableTitle"><i class="fa-solid fa-list mr-2 text-indigo-500"></i>បញ្ជីលម្អិតការលក់ និងប្រតិបត្តិការហិរញ្ញវត្ថុ</h4>
+                        <span class="text-xs font-semibold text-slate-400 uppercase" id="reportTableSub">ទិន្នន័យសម្រាប់គ្រានេះ</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse font-sans">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-3.5 px-6">កាលបរិច្ឆេទ</th>
+                                    <th class="py-3.5 px-6">កូដ / ប្រភេទ</th>
+                                    <th class="py-3.5 px-6">ការពិពណ៌នា</th>
+                                    <th class="py-3.5 px-6">ប្រភពចំណូល-ចំណាយ</th>
+                                    <th class="py-3.5 px-6 text-right">ទឹកប្រាក់សរុប</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="reportTableBody">
+                                <!-- Dynamic rows of sales & manual income/expense -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: STAFF -->
+            <section id="tab-staff" class="space-y-6 hidden">
+                <!-- Action / Search Bar -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="relative w-full sm:w-80">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </span>
+                        <input type="text" id="searchStaff" oninput="filterStaff()" placeholder="ស្វែងរកបុគ្គលិក..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                    </div>
+                    <button onclick="openStaffModal()" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center space-x-2 w-full sm:w-auto shrink-0 shadow-sm">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>បន្ថែមបុគ្គលិកថ្មី</span>
+                    </button>
+                </div>
+
+                <!-- Staff Table -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-4 px-6">អត្តសញ្ញាណ</th>
+                                    <th class="py-4 px-6">ឈ្មោះបុគ្គលិក</th>
+                                    <th class="py-4 px-6">តួនាទី</th>
+                                    <th class="py-4 px-6">លេខទូរស័ព្ទ</th>
+                                    <th class="py-4 px-6 text-center">ចំនួនលក់ (ដង)</th>
+                                    <th class="py-4 px-6 text-right">ប្រាក់លក់សរុប ($)</th>
+                                    <th class="py-4 px-6 text-center">សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="staffTableBody">
+                                <!-- Dynamic Staff Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 7: CUSTOMERS -->
+            <section id="tab-customers" class="space-y-6 hidden">
+                <!-- Action / Search Bar -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="relative w-full sm:w-80">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </span>
+                        <input type="text" id="searchCustomer" oninput="filterCustomers()" placeholder="ស្វែងរកអតិថិជន..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                    </div>
+                    <button onclick="openCustomerModal()" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition flex items-center justify-center space-x-2 w-full sm:w-auto shrink-0 shadow-sm">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>បន្ថែមអតិថិជនថ្មី</span>
+                    </button>
+                </div>
+
+                <!-- Customers Directory Table -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                                    <th class="py-4 px-6">លេខសម្គាល់</th>
+                                    <th class="py-4 px-6">ឈ្មោះអតិថិជន</th>
+                                    <th class="py-4 px-6">លេខទូរស័ព្ទ</th>
+                                    <th class="py-4 px-6">អុីមែល (Email)</th>
+                                    <th class="py-4 px-6 text-right">ការទិញសរុប ($)</th>
+                                    <th class="py-4 px-6 text-center">សកម្មភាព</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm" id="customersTableBody">
+                                <!-- Dynamic Customer rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- OVERLAYS AND MODALS SECTION -->
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-3 pointer-events-none"></div>
+
+    <!-- MODAL 1: ADD/EDIT PRODUCT -->
+    <div id="productModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 max-w-md w-full overflow-hidden shadow-xl transform transition-all">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 id="productModalTitle" class="font-bold text-slate-800 text-base">បន្ថែមផលិតផលថ្មី</h3>
+                <button onclick="closeProductModal()" class="text-slate-400 hover:text-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <!-- Modal Body (Form) -->
+            <div class="p-5 space-y-4">
+                <input type="hidden" id="p_id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ឈ្មោះផលិតផល *</label>
+                    <input type="text" id="p_name" placeholder="ឧ. កាហ្វេទឹកដោះគោ" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ប្រភេទផលិតផល *</label>
+                        <select id="p_category" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                            <option value="ភេសជ្ជៈ">ភេសជ្ជៈ</option>
+                            <option value="អាហារសម្រន់">អាហារសម្រន់</option>
+                            <option value="សម្ភារៈ">សម្ភារៈ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">តម្លៃលក់ ($) *</label>
+                        <input type="number" id="p_price" step="0.01" min="0" placeholder="0.00" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ស្តុកបច្ចុប្បន្ន *</label>
+                        <input type="number" id="p_stock" min="0" placeholder="0" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ស្តុកព្រមានទាបបំផុត *</label>
+                        <input type="number" id="p_minStock" min="0" placeholder="10" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-slate-100 bg-slate-50 flex justify-end space-x-2">
+                <button onclick="closeProductModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 transition text-sm font-medium">បោះបង់</button>
+                <button onclick="saveProduct()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl transition text-sm font-semibold shadow-sm">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD/EDIT CUSTOMER -->
+    <div id="customerModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 max-w-md w-full overflow-hidden shadow-xl transform transition-all">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 id="customerModalTitle" class="font-bold text-slate-800 text-base">បន្ថែមព័ត៌មានអតិថិជន</h3>
+                <button onclick="closeCustomerModal()" class="text-slate-400 hover:text-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <!-- Modal Body (Form) -->
+            <div class="p-5 space-y-4">
+                <input type="hidden" id="c_id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ឈ្មោះអតិថិជន *</label>
+                    <input type="text" id="c_name" placeholder="ឧ. កែវ សីហា" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">លេខទូរស័ព្ទ *</label>
+                    <input type="text" id="c_phone" placeholder="ឧ. 012 345 678" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">អុីមែល (Email)</label>
+                    <input type="email" id="c_email" placeholder="example@gmail.com" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-slate-100 bg-slate-50 flex justify-end space-x-2">
+                <button onclick="closeCustomerModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 transition text-sm font-medium">បោះបង់</button>
+                <button onclick="saveCustomer()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl transition text-sm font-semibold shadow-sm">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: INVOICE / RECEIPT PREVIEW -->
+    <div id="receiptModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 max-w-sm w-full overflow-hidden shadow-xl transform transition-all">
+            <!-- Receipt Content (Printable Layout) -->
+            <div class="p-6 space-y-4" id="printReceiptArea">
+                <div class="text-center space-y-1">
+                    <h3 class="font-extrabold text-lg text-slate-800 tracking-wide">ហាងអាជីវកម្មខ្នាតតូច</h3>
+                    <p class="text-xs text-slate-400">វិថីព្រះមុនីវង្ស ភ្នំពេញ, កម្ពុជា</p>
+                    <p class="text-xs text-slate-400">ទូរស័ព្ទ៖ 012 345 678</p>
+                </div>
+                
+                <div class="border-t border-b border-dashed border-slate-200 py-3 space-y-1.5 text-xs text-slate-600">
+                    <div class="flex justify-between">
+                        <span>វិក្កយបត្រ៖ <strong id="recInvoiceId" class="text-slate-800">TX0000</strong></span>
+                        <span id="recDate">09/06/2026</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>អតិថិជន៖ <strong id="recCustomerName" class="text-slate-800">-</strong></span>
+                        <span id="recPaymentMethod">ABA Pay</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>បុគ្គលិកលក់៖ <strong id="recStaffName" class="text-slate-800">-</strong></span>
+                    </div>
+                </div>
+
+                <!-- Receipt Cart Items -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-[11px] font-bold text-slate-500 uppercase pb-1 border-b border-slate-100">
+                        <span>ផលិតផល</span>
+                        <div class="space-x-4">
+                            <span>ចំនួន x តម្លៃ</span>
+                            <span class="w-16 text-right inline-block">តម្លៃសរុប</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-xs text-slate-700" id="recItemsList">
+                        <!-- Dynamic items -->
+                    </div>
+                </div>
+
+                <!-- Final Receipt Calculation -->
+                <div class="border-t border-dashed border-slate-200 pt-3 space-y-1.5 text-xs">
+                    <div class="flex justify-between text-slate-500">
+                        <span>តម្លៃទំនិញសរុប (Subtotal):</span>
+                        <span id="recSubtotal">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>បញ្ចុះតម្លៃ (Discount):</span>
+                        <span id="recDiscount">0%</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-bold text-slate-800 border-t border-slate-100 pt-2">
+                        <span>ទឹកប្រាក់សរុប (Total Pay):</span>
+                        <span id="recTotal" class="text-sky-600">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="text-center pt-4 border-t border-slate-100">
+                    <p class="text-[10px] text-slate-400 italic">សូមអរគុណ ចំពោះការគាំទ្រអាជីវកម្មយើងខ្ញុំ!</p>
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex gap-2">
+                <button onclick="closeReceiptModal()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-slate-700 text-xs font-semibold transition">
+                    បិទផ្ទាំង
+                </button>
+                <button onclick="printReceipt()" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-1 shadow-sm">
+                    <i class="fa-solid fa-print"></i>
+                    <span>បោះពុម្ព (Print)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: ADD INCOME/EXPENSE TRANSACTION -->
+    <div id="transactionModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 max-w-md w-full overflow-hidden shadow-xl transform transition-all">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 id="transactionModalTitle" class="font-bold text-slate-800 text-base">កត់ត្រាប្រតិបត្តិការហិរញ្ញវត្ថុ</h3>
+                <button onclick="closeTransactionModal()" class="text-slate-400 hover:text-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <!-- Modal Body (Form) -->
+            <div class="p-5 space-y-4">
+                <input type="hidden" id="trans_type">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">កាលបរិច្ឆេទ *</label>
+                    <input type="date" id="trans_date" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ប្រភេទ *</label>
+                    <select id="trans_category" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                        <!-- Will populate dynamically based on type -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ទឹកប្រាក់ ($) *</label>
+                    <input type="number" id="trans_amount" step="0.01" min="0.01" placeholder="0.00" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">សម្គាល់ / ព័ត៌មានលម្អិត</label>
+                    <textarea id="trans_description" placeholder="ឧ. បង់ប្រាក់ខែឱ្យបុគ្គលិកខែឧសភា" rows="2" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition"></textarea>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-slate-100 bg-slate-50 flex justify-end space-x-2">
+                <button onclick="closeTransactionModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 transition text-sm font-medium">បោះបង់</button>
+                <button onclick="saveTransaction()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl transition text-sm font-semibold shadow-sm">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: ADD/EDIT STAFF -->
+    <div id="staffModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl border border-slate-200 max-w-md w-full overflow-hidden shadow-xl transform transition-all">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 id="staffModalTitle" class="font-bold text-slate-800 text-base">បន្ថែមព័ត៌មានបុគ្គលិក</h3>
+                <button onclick="closeStaffModal()" class="text-slate-400 hover:text-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <!-- Modal Body (Form) -->
+            <div class="p-5 space-y-4">
+                <input type="hidden" id="st_id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">ឈ្មោះបុគ្គលិក *</label>
+                    <input type="text" id="st_name" placeholder="ឧ. ម៉ៅ សុខា" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">តួនាទី *</label>
+                    <input type="text" id="st_position" placeholder="ឧ. អ្នកលក់ (Sales)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">លេខទូរស័ព្ទ *</label>
+                    <input type="text" id="st_phone" placeholder="ឧ. 085 111 222" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-slate-100 bg-slate-50 flex justify-end space-x-2">
+                <button onclick="closeStaffModal()" class="px-4 py-2 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 transition text-sm font-medium">បោះបង់</button>
+                <button onclick="saveStaff()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl transition text-sm font-semibold shadow-sm">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC / INTERACTIVE FUNCTIONALITY -->
+    <script>
+        // Setup initial databases on LocalStorage if they don't exist
+        const defaultProducts = [
+            { id: 'P001', name: 'កាហ្វេឡាតេក្តៅ (Hot Latte)', category: 'ភេសជ្ជៈ', price: 2.50, stock: 45, minStock: 10 },
+            { id: 'P002', name: 'នំបុ័ងក្រូសង់ (Croissant)', category: 'អាហារសម្រន់', price: 1.80, stock: 8, minStock: 12 },
+            { id: 'P003', name: 'តែបៃតងក្រូចឆ្មា (Lemon Green Tea)', category: 'ភេសជ្ជៈ', price: 2.20, stock: 65, minStock: 15 },
+            { id: 'P004', name: 'ដបទឹកក្រណាត់ (SME Water Bottle)', category: 'សម្ភារៈ', price: 4.00, stock: 15, minStock: 5 },
+            { id: 'P005', name: 'សូកូឡាក្តៅ (Hot Chocolate)', category: 'ភេសជ្ជៈ', price: 2.80, stock: 3, minStock: 10 }
+        ];
+
+        const defaultCustomers = [
+            { id: 'C001', name: 'សុខ ជា', phone: '012 345 678', email: 'sok.chea@email.com', totalSpent: 25.50 },
+            { id: 'C002', name: 'ចាន់ ធារី', phone: '098 765 432', email: 'chan.theary@email.com', totalSpent: 45.20 },
+            { id: 'C003', name: 'មុន្នី រតនា', phone: '077 889 900', email: 'moni.rathana@email.com', totalSpent: 0 }
+        ];
+
+        const defaultStaff = [
+            { id: 'S001', name: 'ម៉ៅ សុខា', phone: '085 111 222', position: 'អ្នកលក់ (Sales)' },
+            { id: 'S002', name: 'ចាន់ វិរៈ', phone: '093 333 444', position: 'អ្នកលក់ (Sales)' },
+            { id: 'S003', name: 'ហេង លីណា', phone: '012 555 666', position: 'អ្នកលក់ (Sales)' }
+        ];
+
+        const defaultSales = [
+            { id: 'TX1001', date: '2026-06-08', customerId: 'C001', staffId: 'S001', items: [{ productId: 'P001', qty: 2, price: 2.5 }], total: 5.0, paymentMethod: 'ABA Pay', discount: 0 },
+            { id: 'TX1002', date: '2026-06-09', customerId: 'C002', staffId: 'S002', items: [{ productId: 'P003', qty: 3, price: 2.2 }, { productId: 'P002', qty: 1, price: 1.8 }], total: 8.4, paymentMethod: 'សាច់ប្រាក់ (Cash)', discount: 0 }
+        ];
+
+        // Seed some sample financial data
+        const defaultTransactions = [
+            { id: 'TR0001', date: '2026-06-05', type: 'expense', category: 'ទឹកភ្លើង និងជួល', amount: 150.00, description: 'បង់ថ្លៃទឹកភ្លើងប្រចាំខែ' },
+            { id: 'TR0002', date: '2026-06-07', type: 'expense', category: 'ប្រាក់ខែបុគ្គលិក', amount: 200.00, description: 'បើកប្រាក់ខែជូនជំនួយការ' },
+            { id: 'TR0003', date: '2026-06-08', type: 'income', category: 'វិនិយោគ/ផ្សេងៗ', amount: 300.00, description: 'ប្រាក់ជំនួយការរៀបចំហាងថ្មី' },
+            { id: 'TR1001', date: '2026-06-08', type: 'income', category: 'ការលក់ (POS)', amount: 5.0, description: 'ចំណូលស្វ័យប្រវត្តពីការលក់ TX1001' },
+            { id: 'TR1002', date: '2026-06-09', type: 'income', category: 'ការលក់ (POS)', amount: 8.4, description: 'ចំណូលស្វ័យប្រវត្តពីការលក់ TX1002' }
+        ];
+
+        // Core App State loading from localStorage
+        let products = JSON.parse(localStorage.getItem('products')) || defaultProducts;
+        let customers = JSON.parse(localStorage.getItem('customers')) || defaultCustomers;
+        let staff = JSON.parse(localStorage.getItem('staff')) || defaultStaff;
+        let sales = JSON.parse(localStorage.getItem('sales')) || defaultSales;
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || defaultTransactions;
+        let posCart = [];
+        let salesChartRef = null;
+        let reportChartRef = null;
+        let currentReportScope = 'daily'; // daily, monthly, yearly
+
+        // Save helper
+        function saveToLocalStorage() {
+            localStorage.setItem('products', JSON.stringify(products));
+            localStorage.setItem('customers', JSON.stringify(customers));
+            localStorage.setItem('staff', JSON.stringify(staff));
+            localStorage.setItem('sales', JSON.stringify(sales));
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+
+        // Responsive Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const sidebarNav = document.getElementById('sidebarNav');
+            sidebarNav.classList.toggle('hidden');
+        });
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('main > div > section').forEach(sec => sec.classList.add('hidden'));
+            // Deactivate all navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-slate-800', 'text-white');
+                btn.classList.add('text-slate-300');
+            });
+
+            // Show targets
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const targetBtn = document.getElementById(`btn-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'bg-slate-800', 'text-white');
+                targetBtn.classList.remove('text-slate-300');
+            }
+
+            // Update Header Meta
+            const titles = {
+                dashboard: { title: "ផ្ទាំងគ្រប់គ្រង (Dashboard)", sub: "ទិដ្ឋភាពទូទៅនៃដំណើរការអាជីវកម្មរបស់អ្នក" },
+                products: { title: "គ្រប់គ្រងសារពើភ័ណ្ឌ (Products Inventory)", sub: "គ្រប់គ្រងមុខទំនិញ បរិមាណស្តុក និងតម្លៃលក់" },
+                sales: { title: "ការលក់ និងបញ្ជរលក់ POS (Sales Terminal)", sub: "បង្កើតការលក់ថ្មីៗ និងត្រួតពិនិត្យរបាយការណ៍លក់" },
+                transactions: { title: "ចំណូល និងចំណាយ (Cash Flow Ledger)", sub: "កត់ត្រា និងត្រួតពិនិត្យរាល់លំហូរសាច់ប្រាក់ក្នុងអាជីវកម្ម" },
+                reports: { title: "របាយការណ៍ហិរញ្ញវត្ថុ (Financial Reports)", sub: "តាមដានចំណូល ចំណាយ និងប្រាក់ចំណេញប្រចាំថ្ងៃ ប្រចាំខែ និងប្រចាំឆ្នាំ" },
+                staff: { title: "គ្រប់គ្រងបុគ្គលិក (Staff Management)", sub: "គ្រប់គ្រងប្រវត្តិរូបបុគ្គលិក និងតាមដានលទ្ធផលការងារលក់របស់ពួកគេ" },
+                customers: { title: "ព័ត៌មានអតិថិជន (Customers Directory)", sub: "រក្សាទុក និងស្វែងយល់ពីប្រវត្តិទិញទំនិញរបស់អតិថិជន" }
+            };
+            
+            if (titles[tabId]) {
+                document.getElementById('pageTitle').innerText = titles[tabId].title;
+                document.getElementById('pageSubtitle').innerText = titles[tabId].sub;
+            }
+
+            // Close mobile menu if open
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebarNav').classList.add('hidden');
+            }
+
+            // Perform specific load metrics
+            if (tabId === 'dashboard') {
+                renderDashboardMetrics();
+            } else if (tabId === 'products') {
+                renderProductsTable();
+            } else if (tabId === 'sales') {
+                renderPosOptions();
+                renderSalesHistoryTable();
+            } else if (tabId === 'transactions') {
+                renderTransactionsTable();
+            } else if (tabId === 'reports') {
+                initReportPeriodSelectors();
+                renderReportsDashboard();
+            } else if (tabId === 'staff') {
+                renderStaffTable();
+            } else if (tabId === 'customers') {
+                renderCustomersTable();
+            }
+        }
+
+        // Toast Alert Utilities
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `flex items-center space-x-3 px-4 py-3 rounded-xl shadow-lg border text-sm transition duration-300 transform translate-y-2 opacity-0 pointer-events-auto bg-white`;
+            
+            let colorClasses = 'border-emerald-100 bg-emerald-50 text-emerald-800';
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>';
+            if (type === 'error') {
+                colorClasses = 'border-rose-100 bg-rose-50 text-rose-800';
+                icon = '<i class="fa-solid fa-circle-exclamation text-rose-500 text-base"></i>';
+            } else if (type === 'warning') {
+                colorClasses = 'border-amber-100 bg-amber-50 text-amber-800';
+                icon = '<i class="fa-solid fa-triangle-exclamation text-amber-500 text-base"></i>';
+            }
+
+            toast.innerHTML = `${icon} <span class="font-medium">${message}</span>`;
+            toast.className += ` ${colorClasses}`;
+            container.appendChild(toast);
+
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Animate Out & Remove
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // DASHBOARD FUNCTIONALITY
+        function renderDashboardMetrics() {
+            // Stat 1: Total Sales
+            const totalSales = sales.reduce((acc, curr) => acc + curr.total, 0);
+            document.getElementById('statTotalSales').innerText = `$${totalSales.toFixed(2)}`;
+
+            // Stat 2: Total Expenses
+            const totalExpenses = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((acc, curr) => acc + curr.amount, 0);
+            document.getElementById('statTotalExpenses').innerText = `$${totalExpenses.toFixed(2)}`;
+
+            // Stat 3: Net Profit
+            const totalIncomes = transactions
+                .filter(t => t.type === 'income')
+                .reduce((acc, curr) => acc + curr.amount, 0);
+            const netProfit = totalIncomes - totalExpenses;
+            
+            const netProfitEl = document.getElementById('statNetProfit');
+            netProfitEl.innerText = `$${netProfit.toFixed(2)}`;
+            if (netProfit < 0) {
+                netProfitEl.className = "text-2xl font-bold text-rose-600";
+            } else {
+                netProfitEl.className = "text-2xl font-bold text-teal-600";
+            }
+
+            // Stat 4: Customers
+            document.getElementById('statCustomerCount').innerText = customers.length;
+
+            // Warn Low Stock
+            const lowStockProducts = products.filter(p => Number(p.stock) <= Number(p.minStock));
+            const lowStockContainer = document.getElementById('lowStockContainer');
+            const lowStockBadge = document.getElementById('lowStockBadge');
+            
+            if (lowStockBadge) {
+                lowStockBadge.innerText = `${lowStockProducts.length} មុខ`;
+                if (lowStockProducts.length === 0) {
+                    lowStockBadge.className = "bg-emerald-100 text-emerald-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase";
+                    lowStockContainer.innerHTML = `<div class="py-3 text-center text-slate-400 text-xs">គ្មានផលិតផលជិតអស់ពីស្តុកទេ</div>`;
+                } else {
+                    lowStockBadge.className = "bg-rose-100 text-rose-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase";
+                    lowStockContainer.innerHTML = lowStockProducts.map(p => `
+                        <div class="py-3 flex justify-between items-center">
+                            <div class="space-y-0.5">
+                                <h5 class="text-sm font-semibold text-slate-800">${p.name}</h5>
+                                <p class="text-[11px] text-slate-400">កម្រិតកំណត់៖ ${p.minStock} | SKU: ${p.id}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded-lg text-xs font-bold">${p.stock} ក្នុងស្តុក</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            // Render Recent Sales Table
+            const recentSales = [...sales].reverse().slice(0, 5);
+            const recentSalesTable = document.getElementById('recentSalesTable');
+            if (recentSalesTable) {
+                if (recentSales.length === 0) {
+                    recentSalesTable.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">មិនទាន់មានប្រតិបត្តិការលក់ទេ</td></tr>`;
+                } else {
+                    recentSalesTable.innerHTML = recentSales.map(sale => {
+                        const cust = customers.find(c => c.id === sale.customerId) || { name: 'ភ្ញៀវទូទៅ' };
+                        return `
+                            <tr class="hover:bg-slate-50/50 transition duration-150">
+                                <td class="py-3 px-6 font-semibold text-slate-900">${sale.id}</td>
+                                <td class="py-3 px-6 text-slate-500">${sale.date}</td>
+                                <td class="py-3 px-6 text-slate-700">${cust.name}</td>
+                                <td class="py-3 px-6">
+                                    <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-medium">${sale.paymentMethod}</span>
+                                </td>
+                                <td class="py-3 px-6 text-right font-bold text-slate-900">$${sale.total.toFixed(2)}</td>
+                                <td class="py-3 px-6 text-center">
+                                    <button onclick="viewReceipt('${sale.id}')" class="text-sky-500 hover:text-sky-600 text-xs font-bold transition">
+                                        <i class="fa-solid fa-eye mr-1"></i> មើលវិក្កយបត្រ
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+
+            // Setup / Update Chart
+            renderSalesChart();
+        }
+
+        // Render Dashboard Line Chart
+        function renderSalesChart() {
+            const canvas = document.getElementById('salesChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Map sales into dates
+            const monthlySales = {};
+            sales.forEach(s => {
+                const dateKey = s.date; 
+                monthlySales[dateKey] = (monthlySales[dateKey] || 0) + s.total;
+            });
+
+            // Get unique sorted dates (last 7 days of inputs)
+            const sortedDates = Object.keys(monthlySales).sort().slice(-7);
+            const chartData = sortedDates.map(d => monthlySales[d]);
+            
+            if (salesChartRef) {
+                salesChartRef.destroy();
+            }
+
+            salesChartRef = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedDates.length > 0 ? sortedDates : ['គ្មានទិន្នន័យ'],
+                    datasets: [{
+                        label: 'ចំណូលសរុប ($)',
+                        data: chartData.length > 0 ? chartData : [0],
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.05)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#0284c7',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.03)' },
+                            ticks: { font: { family: 'Inter' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter' } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // PRODUCTS INVENTORY SYSTEM
+        function renderProductsTable(filteredData = products) {
+            const tbody = document.getElementById('productsTableBody');
+            if (!tbody) return;
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">រកមិនឃើញផលិតផលក្នុងបញ្ជីឡើយ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredData.map(p => {
+                const isLow = Number(p.stock) <= Number(p.minStock);
+                return `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 px-6 font-semibold text-slate-900">${p.id}</td>
+                        <td class="py-4 px-6 text-slate-800 font-medium">${p.name}</td>
+                        <td class="py-4 px-6">
+                            <span class="bg-sky-50 text-sky-600 border border-sky-100 px-2.5 py-1 rounded-lg text-xs font-semibold">${p.category}</span>
+                        </td>
+                        <td class="py-4 px-6 font-bold text-slate-900">$${Number(p.price).toFixed(2)}</td>
+                        <td class="py-4 px-6">
+                            <span class="${isLow ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-slate-50 text-slate-700 border-slate-200'} border px-2.5 py-1 rounded-lg text-xs font-bold">
+                                ${p.stock} ក្នុងស្តុក
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-slate-500">${p.minStock} គ្រឿង</td>
+                        <td class="py-4 px-6 text-center">
+                            <div class="flex items-center justify-center space-x-3">
+                                <button onclick="openProductModal('${p.id}')" class="text-sky-500 hover:text-sky-600 text-sm transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="deleteProduct('${p.id}')" class="text-rose-500 hover:text-rose-600 text-sm transition"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchProduct').value.toLowerCase();
+            const category = document.getElementById('filterCategory').value;
+
+            const filtered = products.filter(p => {
+                const matchesQuery = p.name.toLowerCase().includes(query) || p.id.toLowerCase().includes(query);
+                const matchesCategory = (category === 'All' || p.category === category);
+                return matchesQuery && matchesCategory;
+            });
+
+            renderProductsTable(filtered);
+        }
+
+        // Product Modal Operations
+        function openProductModal(id = null) {
+            const modal = document.getElementById('productModal');
+            const title = document.getElementById('productModalTitle');
+            if (!modal) return;
+            
+            if (id) {
+                // Edit mode
+                const p = products.find(prod => prod.id === id);
+                document.getElementById('p_id').value = p.id;
+                document.getElementById('p_name').value = p.name;
+                document.getElementById('p_category').value = p.category;
+                document.getElementById('p_price').value = p.price;
+                document.getElementById('p_stock').value = p.stock;
+                document.getElementById('p_minStock').value = p.minStock;
+                title.innerText = "កែប្រែព័ត៌មានផលិតផល";
+            } else {
+                // Create mode
+                document.getElementById('p_id').value = '';
+                document.getElementById('p_name').value = '';
+                document.getElementById('p_category').value = 'ភេសជ្ជៈ';
+                document.getElementById('p_price').value = '';
+                document.getElementById('p_stock').value = '';
+                document.getElementById('p_minStock').value = '10';
+                title.innerText = "បន្ថែមផលិតផលថ្មី";
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function saveProduct() {
+            const id = document.getElementById('p_id').value;
+            const name = document.getElementById('p_name').value.trim();
+            const category = document.getElementById('p_category').value;
+            const price = parseFloat(document.getElementById('p_price').value);
+            const stock = parseInt(document.getElementById('p_stock').value);
+            const minStock = parseInt(document.getElementById('p_minStock').value);
+
+            if (!name || isNaN(price) || isNaN(stock) || isNaN(minStock)) {
+                showToast("សូមបំពេញព័ត៌មានដែលចាំបាច់ទាំងអស់!", "error");
+                return;
+            }
+
+            if (id) {
+                // Update
+                const index = products.findIndex(p => p.id === id);
+                products[index] = { id, name, category, price, stock, minStock };
+                showToast("កែប្រែទិន្នន័យផលិតផលជោគជ័យ!");
+            } else {
+                // Insert New
+                const newId = 'P00' + (products.length + 1);
+                products.push({ id: newId, name, category, price, stock, minStock });
+                showToast("បានបញ្ចូលផលិតផលថ្មីទៅក្នុងបញ្ជី!");
+            }
+
+            saveToLocalStorage();
+            closeProductModal();
+            renderProductsTable();
+        }
+
+        function deleteProduct(id) {
+            // Confirm Dialog simulation
+            if (confirm("តើអ្នកពិតជាចង់លុបផលិតផលនេះមែនទេ?")) {
+                products = products.filter(p => p.id !== id);
+                saveToLocalStorage();
+                renderProductsTable();
+                showToast("បានលុបផលិតផលដោយជោគជ័យ!", "warning");
+            }
+        }
+
+        // SALES POS TERMINAL FUNCTIONALITY
+        function renderPosOptions() {
+            // Fill Customers
+            const custSelect = document.getElementById('posCustomerSelect');
+            if (custSelect) {
+                custSelect.innerHTML = `<option value="walk-in">ភ្ញៀវទូទៅ (Walk-in Customer)</option>` + 
+                    customers.map(c => `<option value="${c.id}">${c.name} (${c.phone})</option>`).join('');
+            }
+
+            // Fill Staff / Cashier
+            const staffSelect = document.getElementById('posStaffSelect');
+            if (staffSelect) {
+                staffSelect.innerHTML = staff.map(s => `<option value="${s.id}">${s.name} (${s.position})</option>`).join('');
+            }
+
+            // Fill Products - Calculates and displays stock minus what is already in the cart
+            const prodSelect = document.getElementById('posProductSelect');
+            if (prodSelect) {
+                const previousValue = prodSelect.value;
+                prodSelect.innerHTML = `<option value="">-- សូមជ្រើសរើសទំនិញលក់ --</option>` + 
+                    products.map(p => {
+                        const cartItem = posCart.find(item => item.productId === p.id);
+                        const cartQty = cartItem ? cartItem.qty : 0;
+                        const remainingStock = p.stock - cartQty;
+                        
+                        const statusText = remainingStock <= 0 ? ' [អស់ពីស្តុក]' : ` [សល់ ${remainingStock} គ្រឿង] [$${p.price.toFixed(2)}]`;
+                        return `<option value="${p.id}" ${remainingStock <= 0 ? 'disabled' : ''}>${p.name}${statusText}</option>`;
+                    }).join('');
+
+                // Restore previous selection if it is still valid and has remaining stock
+                if (previousValue) {
+                    const matchedProduct = products.find(p => p.id === previousValue);
+                    const cartItem = posCart.find(item => item.productId === previousValue);
+                    const cartQty = cartItem ? cartItem.qty : 0;
+                    if (matchedProduct && (matchedProduct.stock - cartQty > 0)) {
+                        prodSelect.value = previousValue;
+                    }
+                }
+            }
+
+            // Update the live information badge on top of the selector
+            updateSelectedProductStockInfo();
+        }
+
+        // New function to update the remaining stock label above product dropdown dynamically
+        function updateSelectedProductStockInfo() {
+            const select = document.getElementById('posProductSelect');
+            const infoSpan = document.getElementById('selectedProductStockInfo');
+            if (!select || !infoSpan) return;
+
+            const prodId = select.value;
+            if (!prodId) {
+                infoSpan.innerText = '';
+                return;
+            }
+
+            const product = products.find(p => p.id === prodId);
+            if (product) {
+                const cartItem = posCart.find(item => item.productId === prodId);
+                const cartQty = cartItem ? cartItem.qty : 0;
+                const remaining = product.stock - cartQty;
+
+                if (remaining <= 0) {
+                    infoSpan.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>ទំនិញនេះអស់ពីស្តុកហើយ!</span>`;
+                } else if (remaining <= product.minStock) {
+                    infoSpan.innerHTML = `<span class="text-amber-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>ស្តុកសល់តិច៖ ${remaining} គ្រឿង</span>`;
+                } else {
+                    infoSpan.innerHTML = `<span class="text-emerald-600 font-medium"><i class="fa-solid fa-circle-check mr-1"></i>ស្តុកដែលអាចលក់បាន៖ <strong>${remaining}</strong> គ្រឿង</span>`;
+                }
+            } else {
+                infoSpan.innerText = '';
+            }
+        }
+
+        function addPosItem() {
+            const prodId = document.getElementById('posProductSelect').value;
+            if (!prodId) {
+                showToast("សូមជ្រើសរើសផលិតផលលក់ជាមុនសិន!", "error");
+                return;
+            }
+
+            const product = products.find(p => p.id === prodId);
+            
+            // Check if product stock has been depleted in cart already
+            const existingCartItem = posCart.find(item => item.productId === prodId);
+            const currentCartQty = existingCartItem ? existingCartItem.qty : 0;
+
+            if (currentCartQty >= product.stock) {
+                showToast(`មិនអាចលក់លើសចំនួនដែលមានក្នុងស្តុកបានទេ (${product.stock} គ្រឿង)!`, "error");
+                return;
+            }
+
+            if (existingCartItem) {
+                existingCartItem.qty += 1;
+            } else {
+                posCart.push({
+                    productId: prodId,
+                    name: product.name,
+                    price: product.price,
+                    qty: 1
+                });
+            }
+
+            showToast(`បានបញ្ចូល ${product.name} ទៅក្នុងកន្ត្រក!`);
+            renderPosCart();
+        }
+
+        function updateCartQty(prodId, newQty) {
+            const product = products.find(p => p.id === prodId);
+            const cartItem = posCart.find(item => item.productId === prodId);
+            
+            if (newQty <= 0) {
+                removeCartItem(prodId);
+                return;
+            }
+
+            if (newQty > product.stock) {
+                showToast(`ស្តុកមិនគ្រប់គ្រាន់ទេ! មានត្រឹមតែ ${product.stock} គ្រឿងប៉ុណ្ណោះ។`, "warning");
+                cartItem.qty = product.stock;
+            } else {
+                cartItem.qty = parseInt(newQty);
+            }
+            renderPosCart();
+        }
+
+        function removeCartItem(prodId) {
+            posCart = posCart.filter(item => item.productId !== prodId);
+            renderPosCart();
+            showToast("បានលុបទំនិញនេះចេញពីបញ្ជីទិញ!", "warning");
+        }
+
+        function clearPosCart() {
+            posCart = [];
+            renderPosCart();
+            showToast("បានសម្អាតកន្ត្រកទិញទំនិញ!", "warning");
+        }
+
+        // Calculate POS Totals
+        function calculatePosTotals() {
+            const subtotal = posCart.reduce((acc, curr) => acc + (curr.qty * curr.price), 0);
+            const discountInput = parseInt(document.getElementById('posDiscount').value) || 0;
+            
+            let discountPercent = Math.min(Math.max(discountInput, 0), 100);
+            const total = subtotal - (subtotal * (discountPercent / 100));
+
+            const subtotalEl = document.getElementById('posSubtotal');
+            const totalEl = document.getElementById('posTotal');
+            if (subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+            if (totalEl) totalEl.innerText = `$${total.toFixed(2)}`;
+        }
+
+        function renderPosCart() {
+            const table = document.getElementById('posCartTable');
+            if (!table) return;
+            if (posCart.length === 0) {
+                table.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">មិនទាន់មានផលិតផលក្នុងបញ្ជីលក់នៅឡើយទេ</td></tr>`;
+                calculatePosTotals();
+                renderPosOptions(); // Dynamic stock refresh
+                return;
+            }
+
+            table.innerHTML = posCart.map(item => {
+                const sub = item.qty * item.price;
+                return `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-3 px-6 font-medium text-slate-800">${item.name}</td>
+                        <td class="py-3 px-6 text-center text-slate-600">$${item.price.toFixed(2)}</td>
+                        <td class="py-3 px-6 text-center">
+                            <div class="flex items-center justify-center space-x-1.5">
+                                <button onclick="updateCartQty('${item.productId}', ${item.qty - 1})" class="w-6 h-6 border border-slate-200 rounded-lg hover:bg-slate-100 flex items-center justify-center transition text-xs"><i class="fa-solid fa-minus"></i></button>
+                                <span class="w-8 text-center text-sm font-semibold">${item.qty}</span>
+                                <button onclick="updateCartQty('${item.productId}', ${item.qty + 1})" class="w-6 h-6 border border-slate-200 rounded-lg hover:bg-slate-100 flex items-center justify-center transition text-xs"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </td>
+                        <td class="py-3 px-6 text-right font-bold text-slate-900">$${sub.toFixed(2)}</td>
+                        <td class="py-3 px-6 text-center">
+                            <button onclick="removeCartItem('${item.productId}')" class="text-rose-500 hover:text-rose-600 transition"><i class="fa-solid fa-xmark"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            calculatePosTotals();
+            renderPosOptions(); // Dynamic stock refresh to update dropdown values instantly
+        }
+
+        // Open quick checkout modal directly
+        function openNewSaleModal() {
+            switchTab('sales');
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        // Finalize POS Sale Operation
+        function processPosSale() {
+            if (posCart.length === 0) {
+                showToast("សូមបញ្ចូលទំនិញក្នុងកន្ត្រកលក់យ៉ាងហោចណាស់មួយមុខ!", "error");
+                return;
+            }
+
+            const customerId = document.getElementById('posCustomerSelect').value;
+            const paymentMethod = document.getElementById('posPaymentMethod').value;
+            const staffId = document.getElementById('posStaffSelect').value;
+            const discount = parseInt(document.getElementById('posDiscount').value) || 0;
+            
+            const subtotal = posCart.reduce((acc, curr) => acc + (curr.qty * curr.price), 0);
+            const total = subtotal - (subtotal * (discount / 100));
+
+            // Generate unique invoice index
+            const invoiceId = 'TX' + Math.floor(1000 + Math.random() * 9000);
+            const today = new Date().toISOString().split('T')[0];
+
+            // 1. Deduct Product Stocks
+            posCart.forEach(cartItem => {
+                const product = products.find(p => p.id === cartItem.productId);
+                if (product) {
+                    product.stock = Number(product.stock) - Number(cartItem.qty);
+                }
+            });
+
+            // 2. Add TotalSpent to Customer Profile if verified customer
+            if (customerId !== 'walk-in') {
+                const customerObj = customers.find(c => c.id === customerId);
+                if (customerObj) {
+                    customerObj.totalSpent = Number(customerObj.totalSpent) + Number(total);
+                }
+            }
+
+            // 3. Create Transaction Record
+            const transaction = {
+                id: invoiceId,
+                date: today,
+                customerId: customerId,
+                staffId: staffId,
+                items: posCart,
+                total: total,
+                paymentMethod: paymentMethod,
+                discount: discount
+            };
+
+            sales.push(transaction);
+
+            // 4. Automatically Log as "Income" Transaction
+            const transId = 'TR' + Math.floor(10000 + Math.random() * 90000);
+            transactions.push({
+                id: transId,
+                date: today,
+                type: 'income',
+                category: 'ការលក់ (POS)',
+                amount: total,
+                description: `ចំណូលស្វ័យប្រវត្តពីការលក់ ${invoiceId}`
+            });
+
+            saveToLocalStorage();
+
+            showToast(`ប្រតិបត្តិការលក់ ${invoiceId} ជោគជ័យ!`);
+            
+            // Open Receipt view instantly
+            viewReceipt(invoiceId);
+
+            // Clean POS status
+            posCart = [];
+            document.getElementById('posDiscount').value = '0';
+            renderPosCart();
+            renderPosOptions();
+        }
+
+        // Render Transaction History Table
+        function renderSalesHistoryTable() {
+            const table = document.getElementById('salesHistoryTable');
+            if (!table) return;
+            if (sales.length === 0) {
+                table.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400">មិនទាន់មានប្រវត្តិប្រតិបត្តិការលក់នៅឡើយទេ</td></tr>`;
+                return;
+            }
+
+            table.innerHTML = [...sales].reverse().map(sale => {
+                const cust = customers.find(c => c.id === sale.customerId) || { name: 'ភ្ញៀវទូទៅ' };
+                const st = staff.find(s => s.id === sale.staffId) || { name: 'មិនស្គាល់' };
+                return `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-3.5 px-6 font-semibold text-slate-900">${sale.id}</td>
+                        <td class="py-3.5 px-6 text-slate-500">${sale.date}</td>
+                        <td class="py-3.5 px-6 text-slate-700 font-medium">${cust.name}</td>
+                        <td class="py-3.5 px-6 text-slate-700">${st.name}</td>
+                        <td class="py-3.5 px-6">
+                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-semibold">${sale.paymentMethod}</span>
+                        </td>
+                        <td class="py-3.5 px-6 text-right font-bold text-slate-900">$${sale.total.toFixed(2)}</td>
+                        <td class="py-3.5 px-6 text-center">
+                            <button onclick="viewReceipt('${sale.id}')" class="text-sky-500 hover:text-sky-600 text-xs font-bold transition flex items-center justify-center gap-1 mx-auto">
+                                <i class="fa-solid fa-file-invoice"></i> មើលវិក្កយបត្រ
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // CASH FLOW / TRANSACTIONS FUNCTIONALITIES
+        function renderTransactionsTable() {
+            const tbody = document.getElementById('transactionsTableBody');
+            if (!tbody) return;
+            if (transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">មិនទាន់មានប្រតិបត្តិការហិរញ្ញវត្ថុទេ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = [...transactions].reverse().map(t => {
+                const isIncome = t.type === 'income';
+                return `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 px-6 text-slate-500 font-mono">${t.date}</td>
+                        <td class="py-4 px-6">
+                            <span class="${isIncome ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-rose-50 text-rose-700 border-rose-200'} border px-2.5 py-1 rounded-lg text-xs font-bold">
+                                ${isIncome ? 'ចំណូល (+)' : 'ចំណាយ (-)'}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 font-medium text-slate-800">${t.category}</td>
+                        <td class="py-4 px-6 text-slate-600">${t.description || '-'}</td>
+                        <td class="py-4 px-6 text-right font-bold ${isIncome ? 'text-teal-600' : 'text-rose-600'}">
+                            $${t.amount.toFixed(2)}
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <button onclick="deleteTransaction('${t.id}')" class="text-rose-500 hover:text-rose-600 text-sm transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openTransactionModal(type) {
+            const modal = document.getElementById('transactionModal');
+            const title = document.getElementById('transactionModalTitle');
+            const categorySelect = document.getElementById('trans_category');
+            if (!modal) return;
+
+            document.getElementById('trans_type').value = type;
+            document.getElementById('trans_date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('trans_amount').value = '';
+            document.getElementById('trans_description').value = '';
+
+            // Setup appropriate categories based on income vs expense
+            if (type === 'income') {
+                title.innerText = "កត់ត្រាចំណូលបន្ថែម";
+                categorySelect.innerHTML = `
+                    <option value="ការលក់ (ផ្សេងៗ)">ការលក់ (ផ្សេងៗ)</option>
+                    <option value="វិនិយោគ/ផ្សេងៗ">វិនិយោគ/ផ្សេងៗ</option>
+                    <option value="ការប្រាក់">ការប្រាក់</option>
+                `;
+            } else {
+                title.innerText = "កត់ត្រាការចំណាយ";
+                categorySelect.innerHTML = `
+                    <option value="ទឹកភ្លើង និងជួល">ទឹកភ្លើង និងជួល</option>
+                    <option value="ប្រាក់ខែបុគ្គលិក">ប្រាក់ខែបុគ្គលិក</option>
+                    <option value="សម្ភារៈ/ទំនិញចូល">សម្ភារៈ/ទំនិញចូល</option>
+                    <option value="ទីផ្សារ/ផ្សព្វផ្សាយ">ទីផ្សារ/ផ្សព្វផ្សាយ</option>
+                    <option value="ចំណាយផ្សេងៗ">ចំណាយផ្សេងៗ</option>
+                `;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.add('hidden');
+        }
+
+        function saveTransaction() {
+            const type = document.getElementById('trans_type').value;
+            const date = document.getElementById('trans_date').value;
+            const category = document.getElementById('trans_category').value;
+            const amount = parseFloat(document.getElementById('trans_amount').value);
+            const description = document.getElementById('trans_description').value.trim();
+
+            if (!date || isNaN(amount) || amount <= 0) {
+                showToast("សូមបំពេញកាលបរិច្ឆេទ និងចំនួនទឹកប្រាក់ឱ្យបានត្រឹមត្រូវ!", "error");
+                return;
+            }
+
+            const transId = 'TR' + Math.floor(10000 + Math.random() * 90000);
+            transactions.push({
+                id: transId,
+                date,
+                type,
+                category,
+                amount,
+                description
+            });
+
+            saveToLocalStorage();
+            closeTransactionModal();
+            renderTransactionsTable();
+            showToast("បានកត់ត្រាប្រតិបត្តិការហិរញ្ញវត្ថុដោយជោគជ័យ!");
+        }
+
+        function deleteTransaction(id) {
+            if (confirm("តើអ្នកពិតជាចង់លុបប្រតិបត្តិការហិរញ្ញវត្ថុនេះមែនទេ?")) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveToLocalStorage();
+                renderTransactionsTable();
+                showToast("បានលុបប្រតិបត្តិការរួចរាល់!", "warning");
+            }
+        }
+
+        // FINANCIAL REPORTS (DAILY / MONTHLY / YEARLY)
+        function initReportPeriodSelectors() {
+            const pickerContainer = document.getElementById('pickerContainer');
+            if (!pickerContainer) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            const currentMonth = today.substring(0, 7); // YYYY-MM
+            const currentYear = new Date().getFullYear();
+
+            if (currentReportScope === 'daily') {
+                document.getElementById('pickerLabel').innerText = "ជ្រើសរើសថ្ងៃ៖";
+                pickerContainer.innerHTML = `
+                    <input type="date" id="reportDateSelect" value="${today}" onchange="renderReportsDashboard()" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-700">
+                `;
+            } else if (currentReportScope === 'monthly') {
+                document.getElementById('pickerLabel').innerText = "ជ្រើសរើសខែ៖";
+                pickerContainer.innerHTML = `
+                    <input type="month" id="reportMonthSelect" value="${currentMonth}" onchange="renderReportsDashboard()" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-700">
+                `;
+            } else if (currentReportScope === 'yearly') {
+                document.getElementById('pickerLabel').innerText = "ជ្រើសរើសឆ្នាំ៖";
+                
+                let selectOptions = '';
+                for (let i = currentYear; i >= currentYear - 5; i--) {
+                    selectOptions += `<option value="${i}">${i}</option>`;
+                }
+
+                pickerContainer.innerHTML = `
+                    <select id="reportYearSelect" onchange="renderReportsDashboard()" class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-700">
+                        ${selectOptions}
+                    </select>
+                `;
+            }
+        }
+
+        function filterReportScope(scope) {
+            currentReportScope = scope;
+            
+            // Update filter buttons appearance
+            document.querySelectorAll('.report-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-500', 'text-white', 'active');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            const activeBtn = document.getElementById(`btn-rep-${scope}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+                activeBtn.classList.add('bg-indigo-500', 'text-white', 'active');
+            }
+
+            initReportPeriodSelectors();
+            renderReportsDashboard();
+        }
+
+        function renderReportsDashboard() {
+            let revenue = 0;
+            let expenses = 0;
+            let chartLabels = [];
+            let chartRevenueData = [];
+            let chartExpenseData = [];
+            let filteredTrans = [];
+            
+            let displayPeriodText = "";
+
+            if (currentReportScope === 'daily') {
+                const selectedDate = document.getElementById('reportDateSelect')?.value || new Date().toISOString().split('T')[0];
+                displayPeriodText = `ថ្ងៃទី៖ ${selectedDate}`;
+
+                // Filter transactions & sales matching this exact date
+                filteredTrans = transactions.filter(t => t.date === selectedDate);
+                
+                revenue = filteredTrans.filter(t => t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+                expenses = filteredTrans.filter(t => t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+
+                // For daily breakdown, show visual of categories
+                const categoriesMap = {};
+                filteredTrans.forEach(t => {
+                    categoriesMap[t.category] = (categoriesMap[t.category] || 0) + t.amount;
+                });
+                chartLabels = Object.keys(categoriesMap).length > 0 ? Object.keys(categoriesMap) : ['គ្មានប្រតិបត្តិការ'];
+                chartRevenueData = chartLabels.map(cat => {
+                    const matched = filteredTrans.filter(t => t.category === cat && t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+                    return matched;
+                });
+                chartExpenseData = chartLabels.map(cat => {
+                    const matched = filteredTrans.filter(t => t.category === cat && t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+                    return matched;
+                });
+
+            } else if (currentReportScope === 'monthly') {
+                const selectedMonth = document.getElementById('reportMonthSelect')?.value || new Date().toISOString().split('T')[0].substring(0, 7);
+                displayPeriodText = `ខែ៖ ${selectedMonth}`;
+
+                filteredTrans = transactions.filter(t => t.date.startsWith(selectedMonth));
+
+                revenue = filteredTrans.filter(t => t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+                expenses = filteredTrans.filter(t => t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+
+                // Generate day-by-day labels (1 to 31) for chart
+                const daysInMonth = 31; // Simplification
+                chartLabels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+                
+                chartLabels.forEach(day => {
+                    const dayStr = day.padStart(2, '0');
+                    const fullDateStr = `${selectedMonth}-${dayStr}`;
+                    const dayIncome = filteredTrans.filter(t => t.date === fullDateStr && t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+                    const dayExpense = filteredTrans.filter(t => t.date === fullDateStr && t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+
+                    chartRevenueData.push(dayIncome);
+                    chartExpenseData.push(dayExpense);
+                });
+
+            } else if (currentReportScope === 'yearly') {
+                const selectedYear = document.getElementById('reportYearSelect')?.value || new Date().getFullYear().toString();
+                displayPeriodText = `ឆ្នាំ៖ ${selectedYear}`;
+
+                filteredTrans = transactions.filter(t => t.date.startsWith(selectedYear));
+
+                revenue = filteredTrans.filter(t => t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+                expenses = filteredTrans.filter(t => t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+
+                // Month-by-month chart mapping
+                const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+                chartLabels = ['មករា (Jan)', 'កុម្ភៈ (Feb)', 'មីនា (Mar)', 'មេសា (Apr)', 'ឧសភា (May)', 'មិថុនា (Jun)', 'កក្កដា (Jul)', 'សីហា (Aug)', 'កញ្ញា (Sep)', 'តុលា (Oct)', 'វិច្ឆិកា (Nov)', 'ធ្នូ (Dec)'];
+
+                months.forEach(m => {
+                    const monthKey = `${selectedYear}-${m}`;
+                    const mIncome = filteredTrans.filter(t => t.date.startsWith(monthKey) && t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+                    const mExpense = filteredTrans.filter(t => t.date.startsWith(monthKey) && t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+
+                    chartRevenueData.push(mIncome);
+                    chartExpenseData.push(mExpense);
+                });
+            }
+
+            // Update UI Counters
+            document.getElementById('repRevenue').innerText = `$${revenue.toFixed(2)}`;
+            document.getElementById('repExpenses').innerText = `$${expenses.toFixed(2)}`;
+            
+            const netProfit = revenue - expenses;
+            const netProfitEl = document.getElementById('repNetProfit');
+            netProfitEl.innerText = `$${netProfit.toFixed(2)}`;
+            if (netProfit < 0) {
+                netProfitEl.className = "text-2xl font-bold text-rose-600 mt-2";
+            } else {
+                netProfitEl.className = "text-2xl font-bold text-teal-600 mt-2";
+            }
+
+            // Update Table Title Subtext
+            document.getElementById('reportTableSub').innerText = displayPeriodText;
+
+            // Render Dynamic detailed records table
+            const tableBody = document.getElementById('reportTableBody');
+            if (tableBody) {
+                if (filteredTrans.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">គ្មានការលក់ ឬប្រតិបត្តិការចំណូលចំណាយក្នុងអំឡុងពេលដែលបានជ្រើសរើសឡើយ</td></tr>`;
+                } else {
+                    tableBody.innerHTML = filteredTrans.map(t => {
+                        const isIncome = t.type === 'income';
+                        // Clean up POS invoices cross reference
+                        let description = t.description;
+                        let itemCodeBadge = t.id;
+
+                        if (t.category === 'ការលក់ (POS)') {
+                            const invoiceId = t.description.split(' ').pop(); // Extract e.g. TX1001
+                            const matchedSale = sales.find(s => s.id === invoiceId);
+                            if (matchedSale) {
+                                const cust = customers.find(c => c.id === matchedSale.customerId) || { name: 'ភ្ញៀវទូទៅ' };
+                                itemCodeBadge = `<span class="font-bold text-indigo-600 underline cursor-pointer" onclick="viewReceipt('${invoiceId}')">${invoiceId}</span>`;
+                                description = `ការលក់ (POS) - អតិថិជន៖ ${cust.name}`;
+                            }
+                        }
+
+                        return `
+                            <tr class="hover:bg-slate-50/50 transition">
+                                <td class="py-4 px-6 text-slate-500 font-mono text-xs">${t.date}</td>
+                                <td class="py-4 px-6 font-semibold">${itemCodeBadge}</td>
+                                <td class="py-4 px-6 text-slate-700">${description || '-'}</td>
+                                <td class="py-4 px-6">
+                                    <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-semibold ${isIncome ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'}">
+                                        ${t.category}
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right font-bold ${isIncome ? 'text-teal-600' : 'text-rose-600'}">
+                                    $${t.amount.toFixed(2)}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+
+            // Render Chart
+            renderReportChart(chartLabels, chartRevenueData, chartExpenseData);
+        }
+
+        function renderReportChart(labels, revData, expData) {
+            const canvas = document.getElementById('reportChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            if (reportChartRef) {
+                reportChartRef.destroy();
+            }
+
+            reportChartRef = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'ចំណូល ($)',
+                            data: revData,
+                            backgroundColor: '#0d9488', // Teal
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'ចំណាយ ($)',
+                            data: expData,
+                            backgroundColor: '#e11d48', // Rose
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0, 0, 0, 0.03)' },
+                            ticks: { font: { family: 'Inter' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter' } }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { font: { family: 'Kantumruy Pro' } }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // RECEIPT RENDER OPERATIONS
+        function viewReceipt(invoiceId) {
+            const sale = sales.find(s => s.id === invoiceId);
+            if (!sale) return;
+
+            const cust = customers.find(c => c.id === sale.customerId) || { name: 'ភ្ញៀវទូទៅ' };
+            const st = staff.find(s => s.id === sale.staffId) || { name: 'មិនស្គាល់' };
+
+            document.getElementById('recInvoiceId').innerText = sale.id;
+            document.getElementById('recDate').innerText = sale.date;
+            document.getElementById('recCustomerName').innerText = cust.name;
+            document.getElementById('recPaymentMethod').innerText = sale.paymentMethod;
+            document.getElementById('recStaffName').innerText = st.name;
+
+            // Generate items lists
+            const listContainer = document.getElementById('recItemsList');
+            let subtotalCalculated = 0;
+            
+            if (listContainer) {
+                listContainer.innerHTML = sale.items.map(item => {
+                    const sub = item.qty * item.price;
+                    subtotalCalculated += sub;
+                    return `
+                        <div class="flex justify-between">
+                            <div class="space-y-0.5">
+                                <p class="font-medium text-slate-800">${item.name}</p>
+                                <p class="text-[10px] text-slate-400">${item.qty} x $${item.price.toFixed(2)}</p>
+                            </div>
+                            <span class="font-semibold text-slate-800">$${sub.toFixed(2)}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('recSubtotal').innerText = `$${subtotalCalculated.toFixed(2)}`;
+            document.getElementById('recDiscount').innerText = `${sale.discount || 0}%`;
+            document.getElementById('recTotal').innerText = `$${sale.total.toFixed(2)}`;
+
+            // Open Modal
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+        }
+
+        // Print utility for invoice preview
+        function printReceipt() {
+            const printContent = document.getElementById('printReceiptArea').innerHTML;
+
+            const printWindow = window.open('', '_blank', 'width=400,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>បោះពុម្ពវិក្កយបត្រ</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro&display=swap" rel="stylesheet">
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <style>
+                        body { font-family: 'Kantumruy Pro', sans-serif; }
+                    </style>
+                </head>
+                <body class="p-4" onload="window.print();window.close();">
+                    <div class="max-w-xs mx-auto border border-dashed p-4">
+                        ${printContent}
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        function printSalesReport() {
+            let scopeTitle = "";
+            let filteredTrans = [];
+            let activePeriodText = "";
+
+            if (currentReportScope === 'daily') {
+                const selectedDate = document.getElementById('reportDateSelect')?.value || new Date().toISOString().split('T')[0];
+                scopeTitle = `របាយការណ៍ហិរញ្ញវត្ថុប្រចាំថ្ងៃ (Daily Report)`;
+                activePeriodText = `កាលបរិច្ឆេទ៖ ${selectedDate}`;
+                filteredTrans = transactions.filter(t => t.date === selectedDate);
+            } else if (currentReportScope === 'monthly') {
+                const selectedMonth = document.getElementById('reportMonthSelect')?.value || new Date().toISOString().split('T')[0].substring(0, 7);
+                scopeTitle = `របាយការណ៍ហិរញ្ញវត្ថុប្រចាំខែ (Monthly Report)`;
+                activePeriodText = `ប្រចាំខែ៖ ${selectedMonth}`;
+                filteredTrans = transactions.filter(t => t.date.startsWith(selectedMonth));
+            } else if (currentReportScope === 'yearly') {
+                const selectedYear = document.getElementById('reportYearSelect')?.value || new Date().getFullYear().toString();
+                scopeTitle = `របាយការណ៍ហិរញ្ញវត្ថុប្រចាំឆ្នាំ (Yearly Report)`;
+                activePeriodText = `ប្រចាំឆ្នាំ៖ ${selectedYear}`;
+                filteredTrans = transactions.filter(t => t.date.startsWith(selectedYear));
+            }
+
+            const revenue = filteredTrans.filter(t => t.type === 'income').reduce((sum, curr) => sum + curr.amount, 0);
+            const expenses = filteredTrans.filter(t => t.type === 'expense').reduce((sum, curr) => sum + curr.amount, 0);
+            const netProfit = revenue - expenses;
+
+            const rowsHtml = filteredTrans.map(t => {
+                let displayDesc = t.description;
+                if (t.category === 'ការលក់ (POS)') {
+                    const invoiceId = t.description.split(' ').pop();
+                    const matchedSale = sales.find(s => s.id === invoiceId);
+                    if (matchedSale) {
+                        const cust = customers.find(c => c.id === matchedSale.customerId) || { name: 'ភ្ញៀវទូទៅ' };
+                        displayDesc = `ការលក់ (POS) - វិក្កយបត្រ៖ ${invoiceId} (អតិថិជន៖ ${cust.name})`;
+                    }
+                }
+
+                return `
+                    <tr class="border-b border-slate-200">
+                        <td class="py-2.5 px-3 text-slate-600 font-mono text-xs">${t.date}</td>
+                        <td class="py-2.5 px-3 font-semibold text-slate-800 text-xs">${t.id}</td>
+                        <td class="py-2.5 px-3 text-slate-600 text-xs">${displayDesc || '-'}</td>
+                        <td class="py-2.5 px-3">
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${t.type === 'income' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">
+                                ${t.category}
+                            </span>
+                        </td>
+                        <td class="py-2.5 px-3 text-right font-bold text-xs ${t.type === 'income' ? 'text-teal-600' : 'text-rose-600'}">$${t.amount.toFixed(2)}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const printWindow = window.open('', '_blank', 'width=850,height=850');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>បោះពុម្ពរបាយការណ៍ហិរញ្ញវត្ថុ - SME Suite</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <script src="https://cdn.tailwindcss.com"><\/script>
+                    <style>
+                        body { font-family: 'Kantumruy Pro', sans-serif; }
+                        @media print {
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body class="bg-white p-8 text-slate-800">
+                    <div class="max-w-4xl mx-auto space-y-6">
+                        <!-- Business Header Info -->
+                        <div class="flex justify-between items-center border-b pb-6 border-slate-200">
+                            <div class="space-y-1">
+                                <h1 class="text-2xl font-black text-slate-900 tracking-wide">ហាងអាជីវកម្មខ្នាតតូច (SME Shop)</h1>
+                                <p class="text-xs text-slate-400">វិថីព្រះមុនីវង្ស ភ្នំពេញ, កម្ពុជា | ទូរស័ព្ទ៖ 012 345 678</p>
+                            </div>
+                            <div class="text-right space-y-1">
+                                <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 uppercase">របាយការណ៍លក់ផ្លូវការ</span>
+                                <p class="text-[11px] text-slate-400 mt-1.5">កាលបរិច្ឆេទបោះពុម្ព៖ ${new Date().toLocaleDateString('km-KH')}</p>
+                            </div>
+                        </div>
+
+                        <!-- Scope Banner -->
+                        <div class="text-center py-2 bg-slate-50 border rounded-xl border-slate-100">
+                            <h2 class="text-base font-bold text-slate-800">${scopeTitle}</h2>
+                            <p class="text-xs text-slate-500 font-bold mt-1">${activePeriodText}</p>
+                        </div>
+
+                        <!-- Financial Summary Cards -->
+                        <div class="grid grid-cols-3 gap-6 my-6 text-center">
+                            <div class="border rounded-2xl p-4 bg-emerald-50 border-emerald-100">
+                                <span class="text-[10px] text-emerald-800 font-bold block uppercase tracking-wider">ចំណូលសរុប (Revenue)</span>
+                                <span class="text-2xl font-black text-emerald-700 block mt-1.5">$${revenue.toFixed(2)}</span>
+                            </div>
+                            <div class="border rounded-2xl p-4 bg-rose-50 border-rose-100">
+                                <span class="text-[10px] text-rose-800 font-bold block uppercase tracking-wider">ចំណាយសរុប (Expenses)</span>
+                                <span class="text-2xl font-black text-rose-700 block mt-1.5">$${expenses.toFixed(2)}</span>
+                            </div>
+                            <div class="border rounded-2xl p-4 ${netProfit >= 0 ? 'bg-teal-50 border-teal-100' : 'bg-rose-50 border-rose-100'}">
+                                <span class="text-[10px] ${netProfit >= 0 ? 'text-teal-800' : 'text-rose-800'} font-bold block uppercase tracking-wider">ចំណេញសុទ្ធ (Net Profit)</span>
+                                <span class="text-2xl font-black ${netProfit >= 0 ? 'text-teal-700' : 'text-rose-700'} block mt-1.5">$${netProfit.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <!-- Transactions Details Table -->
+                        <div class="space-y-3">
+                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">លម្អិតប្រតិបត្តិការលំហូរសាច់ប្រាក់ (Cash Flow Details)</h3>
+                            <table class="w-full text-xs text-left border-collapse border border-slate-200">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
+                                        <th class="py-3 px-3">កាលបរិច្ឆេទ</th>
+                                        <th class="py-3 px-3">លេខកូដ</th>
+                                        <th class="py-3 px-3">ការពិពណ៌នា</th>
+                                        <th class="py-3 px-3">ប្រភពចំណូល/ចំណាយ</th>
+                                        <th class="py-3 px-3 text-right">ទឹកប្រាក់ ($)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${rowsHtml || '<tr><td colspan="5" class="py-6 text-center text-slate-400 font-medium">គ្មានប្រតិបត្តិការក្នុងកាលបរិច្ឆេទដែលបានជ្រើសរើសឡើយ</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Signatures Layout -->
+                        <div class="grid grid-cols-2 gap-12 pt-16 text-center text-xs text-slate-500">
+                            <div class="space-y-16">
+                                <p class="font-medium text-slate-400">ហត្ថលេខាអ្នករៀបចំ</p>
+                                <p class="border-t border-dashed border-slate-200 pt-2 w-48 mx-auto font-bold text-slate-800">(........................................)</p>
+                            </div>
+                            <div class="space-y-16">
+                                <p class="font-medium text-slate-400">ហត្ថលេខាម្ចាស់អាជីវកម្ម</p>
+                                <p class="border-t border-dashed border-slate-200 pt-2 w-48 mx-auto font-bold text-slate-800">(........................................)</p>
+                            </div>
+                        </div>
+
+                        <!-- Print Trigger Bar -->
+                        <div class="no-print pt-10 flex justify-end gap-3 border-t border-slate-100">
+                            <button onclick="window.close()" class="px-5 py-2 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 transition text-xs font-semibold">
+                                បិទផ្ទាំង
+                            </button>
+                            <button onclick="window.print()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition text-xs flex items-center gap-1.5 shadow-md">
+                                <i class="fa-solid fa-print"></i>
+                                <span>ចាប់ផ្តើមព្រីន (Start Print)</span>
+                            </button>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+
+        // STAFF MANAGEMENT SYSTEM
+        function renderStaffTable(filteredData = staff) {
+            const tbody = document.getElementById('staffTableBody');
+            if (!tbody) return;
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">រកមិនឃើញទិន្នន័យបុគ្គលិកឡើយ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredData.map(s => {
+                // Calculate performance metrics dynamically
+                const staffSales = sales.filter(sale => sale.staffId === s.id);
+                const salesCount = staffSales.length;
+                const totalSalesValue = staffSales.reduce((sum, curr) => sum + curr.total, 0);
+
+                return `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-4 px-6 font-semibold text-slate-900">${s.id}</td>
+                        <td class="py-4 px-6 text-slate-800 font-medium">${s.name}</td>
+                        <td class="py-4 px-6">
+                            <span class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-lg text-xs font-semibold">${s.position}</span>
+                        </td>
+                        <td class="py-4 px-6 text-slate-600">${s.phone}</td>
+                        <td class="py-4 px-6 text-center font-bold text-slate-700">${salesCount} ដង</td>
+                        <td class="py-4 px-6 text-right font-bold text-teal-600">$${totalSalesValue.toFixed(2)}</td>
+                        <td class="py-4 px-6 text-center">
+                            <div class="flex items-center justify-center space-x-3">
+                                <button onclick="openStaffModal('${s.id}')" class="text-sky-500 hover:text-sky-600 text-sm transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="deleteStaff('${s.id}')" class="text-rose-500 hover:text-rose-600 text-sm transition"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterStaff() {
+            const query = document.getElementById('searchStaff').value.toLowerCase();
+            const filtered = staff.filter(s => 
+                s.name.toLowerCase().includes(query) || 
+                s.phone.toLowerCase().includes(query) ||
+                s.position.toLowerCase().includes(query)
+            );
+            renderStaffTable(filtered);
+        }
+
+        function openStaffModal(id = null) {
+            const modal = document.getElementById('staffModal');
+            const title = document.getElementById('staffModalTitle');
+            if (!modal) return;
+
+            if (id) {
+                // Edit mode
+                const s = staff.find(st => st.id === id);
+                document.getElementById('st_id').value = s.id;
+                document.getElementById('st_name').value = s.name;
+                document.getElementById('st_position').value = s.position;
+                document.getElementById('st_phone').value = s.phone;
+                title.innerText = "កែប្រែព័ត៌មានបុគ្គលិក";
+            } else {
+                // Create mode
+                document.getElementById('st_id').value = '';
+                document.getElementById('st_name').value = '';
+                document.getElementById('st_position').value = '';
+                document.getElementById('st_phone').value = '';
+                title.innerText = "បន្ថែមបុគ្គលិកថ្មី";
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeStaffModal() {
+            document.getElementById('staffModal').classList.add('hidden');
+        }
+
+        function saveStaff() {
+            const id = document.getElementById('st_id').value;
+            const name = document.getElementById('st_name').value.trim();
+            const position = document.getElementById('st_position').value.trim();
+            const phone = document.getElementById('st_phone').value.trim();
+
+            if (!name || !position || !phone) {
+                showToast("សូមបំពេញព័ត៌មានដែលចាំបាច់ទាំងអស់!", "error");
+                return;
+            }
+
+            if (id) {
+                // Update
+                const index = staff.findIndex(s => s.id === id);
+                staff[index] = { ...staff[index], name, position, phone };
+                showToast("កែប្រែទិន្នន័យបុគ្គលិកជោគជ័យ!");
+            } else {
+                // Insert New
+                const newId = 'S00' + (staff.length + 1);
+                staff.push({ id: newId, name, position, phone });
+                showToast("បានបន្ថែមបុគ្គលិកថ្មីទៅក្នុងបញ្ជី!");
+            }
+
+            saveToLocalStorage();
+            closeStaffModal();
+            renderStaffTable();
+        }
+
+        function deleteStaff(id) {
+            if (confirm("តើអ្នកប្រាកដជាចង់លុបបុគ្គលិកនេះចេញពីប្រព័ន្ធ?")) {
+                // Check if staff has processed any sales
+                const hasSales = sales.some(sale => sale.staffId === id);
+                if (hasSales) {
+                    showToast("មិនអាចលុបបុគ្គលិកនេះបានទេ ព្រោះពួកគេធ្លាប់មានប្រវត្តិលក់ទំនិញ!", "error");
+                    return;
+                }
+                staff = staff.filter(s => s.id !== id);
+                saveToLocalStorage();
+                renderStaffTable();
+                showToast("លុបគណនីបុគ្គលិករួចរាល់!", "warning");
+            }
+        }
+
+        // CUSTOMER MANAGEMENT SYSTEM
+        function renderCustomersTable(filteredData = customers) {
+            const tbody = document.getElementById('customersTableBody');
+            if (!tbody) return;
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">រកមិនឃើញទិន្នន័យអតិថិជនឡើយ</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filteredData.map(c => `
+                <tr class="hover:bg-slate-50/50 transition">
+                    <td class="py-4 px-6 font-semibold text-slate-900">${c.id}</td>
+                    <td class="py-4 px-6 text-slate-800 font-medium">${c.name}</td>
+                    <td class="py-4 px-6 text-slate-600">${c.phone}</td>
+                    <td class="py-4 px-6 text-slate-500">${c.email || 'N/A'}</td>
+                    <td class="py-4 px-6 text-right font-bold text-slate-950">$${c.totalSpent.toFixed(2)}</td>
+                    <td class="py-4 px-6 text-center">
+                        <div class="flex items-center justify-center space-x-3">
+                            <button onclick="openCustomerModal('${c.id}')" class="text-sky-500 hover:text-sky-600 text-sm transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteCustomer('${c.id}')" class="text-rose-500 hover:text-rose-600 text-sm transition"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterCustomers() {
+            const query = document.getElementById('searchCustomer').value.toLowerCase();
+            const filtered = customers.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.phone.toLowerCase().includes(query) ||
+                (c.email && c.email.toLowerCase().includes(query))
+            );
+            renderCustomersTable(filtered);
+        }
+
+        // Customer Modal operations
+        function openCustomerModal(id = null) {
+            const modal = document.getElementById('customerModal');
+            const title = document.getElementById('customerModalTitle');
+            if (!modal) return;
+
+            if (id) {
+                // Edit
+                const c = customers.find(cust => cust.id === id);
+                document.getElementById('c_id').value = c.id;
+                document.getElementById('c_name').value = c.name;
+                document.getElementById('c_phone').value = c.phone;
+                document.getElementById('c_email').value = c.email || '';
+                title.innerText = "កែប្រែព័ត៌មានអតិថិជន";
+            } else {
+                // Create New
+                document.getElementById('c_id').value = '';
+                document.getElementById('c_name').value = '';
+                document.getElementById('c_phone').value = '';
+                document.getElementById('c_email').value = '';
+                title.innerText = "បន្ថែមអតិថិជនថ្មី";
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.add('hidden');
+        }
+
+        function saveCustomer() {
+            const id = document.getElementById('c_id').value;
+            const name = document.getElementById('c_name').value.trim();
+            const phone = document.getElementById('c_phone').value.trim();
+            const email = document.getElementById('c_email').value.trim();
+
+            if (!name || !phone) {
+                showToast("សូមបញ្ចូលឈ្មោះ និងលេខទូរស័ព្ទរបស់អតិថិជន!", "error");
+                return;
+            }
+
+            if (id) {
+                // Update customer profile
+                const index = customers.findIndex(c => c.id === id);
+                const currentTotalSpent = customers[index].totalSpent;
+                customers[index] = { id, name, phone, email, totalSpent: currentTotalSpent };
+                showToast("រក្សាទុកព័ត៌មានអតិថិជនរួចរាល់!");
+            } else {
+                // Insert New profile
+                const newId = 'C00' + (customers.length + 1);
+                customers.push({ id: newId, name, phone, email, totalSpent: 0 });
+                showToast("បានចុះឈ្មោះអតិថិជនថ្មីទៅក្នុងប្រព័ន្ធ!");
+            }
+
+            saveToLocalStorage();
+            closeCustomerModal();
+            renderCustomersTable();
+        }
+
+        function deleteCustomer(id) {
+            if (confirm("តើអ្នកប្រាកដជាចង់លុបអតិថិជននេះចេញពីប្រព័ន្ធ?")) {
+                customers = customers.filter(c => c.id !== id);
+                saveToLocalStorage();
+                renderCustomersTable();
+                showToast("លុបគណនីអតិថិជនរួចរាល់!", "warning");
+            }
+        }
+
+        // INITIAL TRIGGER ON WINDOW LOAD
+        window.onload = function () {
+            // Initiate App Dashboard screen first
+            renderDashboardMetrics();
+        }
+    </script>
+</body>
+</html>
